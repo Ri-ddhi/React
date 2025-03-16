@@ -1,21 +1,25 @@
+import React from "react";
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav className="bg-blue-600 p-4 text-white flex justify-between">
-      <h1 className="text-xl font-bold">MyWebsite</h1>
-      <div>
-        <Link className="mx-2 hover:underline" to="/">
+    <AppBar position="static" sx={{ backgroundColor: "#6F4F1F" }}>
+      <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          Expense Tracker
+        </Typography>
+        <Button color="inherit" component={Link} to="/">
           Home
-        </Link>
-        <Link className="mx-2 hover:underline" to="/services">
+        </Button>
+        <Button color="inherit" component={Link} to="/Services">
           Services
-        </Link>
-        <Link className="mx-2 hover:underline" to="/get-started">
+        </Button>
+        <Button color="inherit" component={Link} to="/GetStarted">
           Get Started
-        </Link>
-      </div>
-    </nav>
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 };
 

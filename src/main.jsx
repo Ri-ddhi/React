@@ -1,20 +1,31 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Box } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
-import GetStarted from "./pages/getStarted";
+import GetStarted from "./pages/GetStarted";
+import Register from "./pages/Register";
 
-function Main() {
+import "./index.css";
+
+const Main = () => {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/get-started" element={<GetStarted />} />
-      </Routes>
+      <Box>
+        <Routes>
+          {/* Define the Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/Services" element={<Services />} />
+          <Route path="/getStarted" element={<GetStarted />} />
+          <Route path="/register" element={<Register />} />
+          {/* New route for question page */}
+        </Routes>
+      </Box>
     </Router>
   );
-}
+};
 
-export default Main;
+ReactDOM.createRoot(document.getElementById("root")).render(<Main />);

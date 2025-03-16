@@ -1,47 +1,125 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  LinearProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Formik } from "formik";
+import { Link, useNavigate } from "react-router";
+import * as yup from "yup";
+import toast from "react-hot-toast";
 import { useState } from "react";
 
-const GetStarted = () => {
-  const [showLogin, setShowLogin] = useState(false);
+const Login = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const validationSchema = yup.object({
+    email: yup
+      .string()
+      .email("Must be a valid email")
+      .required("Email is required.")
+      .trim()
+      .lowercase(),
+    password: yup.string().required("Password is required.").trim(),
+  });
+
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.post("/user/login", values);
+      localStorage.setItem("accessToken", res.data?.accessToken);
+      toast.success("You are logged in successfully.");
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed", error);
+      toast.error(error?.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="p-6 text-center">
-      <h2 className="text-3xl font-bold">Get Started Now</h2>
-      <p className="mt-4 text-lg">Join us today and build amazing projects!</p>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh", // Full height of viewport
+        backgroundColor: "#f5f5f5",
+      }}
+    >
+      {loading && <LinearProgress color="warning" />}
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ handleSubmit, getFieldProps, touched, errors }) => (
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "2rem",
+              width: 350,
+              boxShadow:
+                "rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px",
+              padding: "1rem",
+            }}
+          >
+            <Typography variant="h5">Login</Typography>
 
-      {/* Buttons */}
-      <div className="mt-6">
-        <button className="px-4 py-2 bg-green-600 text-white rounded mr-4">
-          Sign Up
-        </button>
-        <button
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-          onClick={() => setShowLogin(!showLogin)}
-        >
-          Login
-        </button>
-      </div>
+            <FormControl fullWidth>
+              <TextField label="Email" {...getFieldProps("email")} required />
+              {touched.email && errors.email && (
+                <FormHelperText error>{errors.email}</FormHelperText>
+              )}
+            </FormControl>
 
-      {/* Login Form (Shown when showLogin is true) */}
-      {showLogin && (
-        <div className="mt-6 bg-gray-100 p-4 rounded shadow-md w-80 mx-auto">
-          <h3 className="text-xl font-semibold mb-2">Login</h3>
-          <input
-            type="text"
-            placeholder="Username"
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-2 mb-2 border rounded"
-          />
-          <button className="w-full px-4 py-2 bg-blue-500 text-white rounded mt-2">
-            Submit
-          </button>
-        </div>
-      )}
-    </div>
+            <FormControl fullWidth>
+              <TextField
+                label="Password"
+                type="password"
+                {...getFieldProps("password")}
+                required
+              />
+              {touched.password && errors.password && (
+                <FormHelperText error>{errors.password}</FormHelperText>
+              )}
+            </FormControl>
+
+            <Box sx={{ textAlign: "center", width: "100%" }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="warning"
+                type="submit"
+              >
+                Submit
+              </Button>
+              <Link
+                to="/register"
+                style={{
+                  color: "orangered",
+                  textDecoration: "none",
+                  marginTop: "10px",
+                  display: "block",
+                }}
+              >
+                New here? Register
+              </Link>
+            </Box>
+          </form>
+        )}
+      </Formik>
+    </Box>
   );
 };
 
-export default GetStarted;
+export default Login;
